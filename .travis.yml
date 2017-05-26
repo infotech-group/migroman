@@ -9,7 +9,8 @@ services:
 script:
 #  - go get -d -v ./...
   - go test $(go list ./... | grep -v vendor)
-  - go build -v .
+  - CGO_ENABLED=0 GOOS=linux go build -v -a -tags netgo .
+
 
 after_success:
   - if [ ! -z "$TRAVIS_TAG" ]; then
