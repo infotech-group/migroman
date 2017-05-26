@@ -17,7 +17,7 @@ before_install:
 script:
   - go get -d -v ./...
   - go test $(go list ./... | grep -v vendor)
-  - go build -v ./...
+  - go build -v .
   - docker build  -t infotechgroup/migroman:test .
 
 after_success:
