@@ -1,4 +1,4 @@
-FROM golang:onbuild
+FROM scratch
 
 COPY ./migroman migroman
 
