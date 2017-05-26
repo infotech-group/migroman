@@ -1,0 +1,29 @@
+sudo: required
+language: go
+go: 
+  - 1.8.x
+
+services:
+  docker
+
+
+before_install:
+  - if [ ! -z "$TRAVIS_TAG" ]; then 
+    export TRAVIS_TAG=`echo $TRAVIS_TAG | sed 's%[/_]%-%g'`;
+    else
+    export TRAVIS_TAG=test;
+    fi
+
+script:
+  - go get -d -v ./...
+  - go test $(go list ./... | grep -v vendor)
+  - go build -v ./...
+  - docker build  -t infotechgroup/migroman:test .
+
+after_success:
+  - if [ ! -z "$TRAVIS_TAG" ]; then
+    docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker tag infotechgroup/migroman:$TRAVIS_TAG infotechgroup/migroman:latest;
+    docker push infotechgroup/migroman:$TRAVIS_TAG;
+    docker push infotechgroup/migroman:latest;
+    fi
